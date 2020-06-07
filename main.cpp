@@ -7,8 +7,13 @@
 
 
 
-float bench_old(std::size_t dataset_size) {}
-float bench_new(std::size_t dataset_size) {}
+double bench_old(std::size_t dataset_size) {
+  return dataset_size;
+}
+
+double bench_new(std::size_t dataset_size) {
+  return dataset_size * 2;
+}
 
 using std::cin;
 using std::cout;
@@ -16,10 +21,22 @@ using std::endl;
 
 int main() {
 
+  std::vector<double> x, yOld, yNew;
+
+  for (std::size_t i = 0; i < 10000; ++i) {
+
+    x.push_back(i);
+    yOld.push_back(bench_old(i));
+    yNew.push_back(bench_new(i));
+  }
+
+
   Gnuplot plot("lines");
 
   plot.set_title("test");
-  plot.plot_slope(1.0,0.0,"y=x");
+  plot.plot_xy(x, yOld, "Old");
+  plot.plot_xy(x, yNew, "New");
+
 
   cout << endl << "Press ENTER to continue..." << endl;
   std::cin.clear();
