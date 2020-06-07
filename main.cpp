@@ -12,7 +12,7 @@ using std::endl;
 
 using namespace std::chrono;
 
-size_t bench_old(std::size_t dataset_size) {
+int bench_old(std::size_t dataset_size) {
 
   auto start = high_resolution_clock::now();
 
@@ -24,7 +24,7 @@ size_t bench_old(std::size_t dataset_size) {
   return duration;
 }
 
-size_t bench_new(std::size_t dataset_size) {
+int bench_new(std::size_t dataset_size) {
 
   auto start = high_resolution_clock::now();
 
@@ -38,9 +38,9 @@ size_t bench_new(std::size_t dataset_size) {
 
 int main() {
 
-  std::vector<size_t> x, yOld, yNew;
+  std::vector<int> x, yOld, yNew;
 
-  for (size_t i = 0; i < 10000; ++i) {
+  for (int i = 0; i < 10000; ++i) {
 
     x.push_back(i);
     yOld.push_back(bench_old(i));
