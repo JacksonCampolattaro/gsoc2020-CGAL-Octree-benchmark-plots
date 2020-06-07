@@ -2,9 +2,18 @@
 // Created by jackcamp on 6/6/20.
 //
 
+#define CGAL_TRACE_STREAM std::cerr
+
 #include "gnuplot_i.hpp"
 #include <iostream>
 #include <chrono>
+
+#include "Octree.h"
+#include <CGAL/Shape_detection/Efficient_RANSAC/Efficient_RANSAC_traits.h>
+#include "Octree_3.h"
+#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+#include <CGAL/Point_set_3.h>
+#include <CGAL/point_generators_3.h>
 
 using std::cin;
 using std::cout;
@@ -12,39 +21,89 @@ using std::endl;
 
 using namespace std::chrono;
 
-int bench_old(std::size_t dataset_size) {
+// Defining the kernel
+typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
+typedef Kernel::Point_3 Point;
+typedef CGAL::Point_set_3<Point> Point_set;
+typedef CGAL::Point_set_3<Point> Point_set;
 
-  auto start = high_resolution_clock::now();
+// Defining the Old Octree
+typedef CGAL::Shape_detection::Efficient_RANSAC_traits
+        <Kernel, Point_set, typename Point_set::Point_map, typename Point_set::Vector_map>
+        Traits;
+typedef CGAL::Shape_detection::internal::Octree
+<CGAL::Shape_detection::internal::DirectPointAccessor<Traits>>
+        OldOctree;
 
-  // Code to be timed
+// Defining the New Octree
+typedef CGAL::OCTREE::Octree
+        <Kernel, Point_set, typename Point_set::Point_map, typename Point_set::Vector_map>
+        NewOctree;
 
-  auto end = high_resolution_clock::now();
-  auto duration = duration_cast<microseconds>(end - start).count();
+static const int repetitions = 100;
 
-  return duration;
+int bench_old(Point_set points) {
+
+  auto point_map = points.point_map();
+  auto normal_map = points.normal_map();
+  auto input_iterator_first = points.begin();
+  auto input_iterator_beyond = points.end();
+
+  int duration = 0;
+  for (int i = 0; i < repetitions; ++i) {
+
+    auto start = high_resolution_clock::now();
+
+    auto oldOctree = OldOctree((Traits()), input_iterator_first,
+                               input_iterator_beyond, point_map, normal_map);
+    oldOctree.createTree();
+
+    auto end = high_resolution_clock::now();
+    duration += duration_cast<microseconds>(end - start).count();
+  }
+
+  return duration / repetitions;
 }
 
-int bench_new(std::size_t dataset_size) {
+int bench_new(Point_set points) {
 
-  auto start = high_resolution_clock::now();
+  auto point_map = points.point_map();
+  auto normal_map = points.normal_map();
+  auto input_iterator_first = points.begin();
+  auto input_iterator_beyond = points.end();
 
-  // Code to be timed
+  int duration = 0;
+  for (int i = 0; i < repetitions; ++i) {
 
-  auto end = high_resolution_clock::now();
-  auto duration = duration_cast<microseconds>(end - start).count();
+    auto start = high_resolution_clock::now();
 
-  return duration;
+    NewOctree newOctree(points, point_map, normal_map);
+
+    auto end = high_resolution_clock::now();
+    duration += duration_cast<microseconds>(end - start).count();
+  }
+
+  return duration / repetitions;
 }
 
 int main() {
 
   std::vector<int> x, yOld, yNew;
 
-  for (int i = 0; i < 10000; ++i) {
+  for (int N = 1; N < 10000; N += 1 + (N / 100)) {
 
-    x.push_back(i);
-    yOld.push_back(bench_old(i));
-    yNew.push_back(bench_new(i));
+    cout << N << endl;
+
+    // Generate random point set
+    Point_set points;
+    CGAL::Random_points_on_sphere_3<Point> generator;
+    points.reserve(N);
+    for (std::size_t i = 0; i < N; ++i)
+      points.insert(*(generator++));
+
+    x.push_back(N);
+    yOld.push_back(bench_old(points));
+    yNew.push_back(bench_new(points));
   }
 
 
