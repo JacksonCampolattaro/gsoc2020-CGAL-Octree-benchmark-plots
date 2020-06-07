@@ -40,7 +40,7 @@ typedef CGAL::OCTREE::Octree
         <Kernel, Point_set, typename Point_set::Point_map, typename Point_set::Vector_map>
         NewOctree;
 
-static const int repetitions = 100;
+static const int repetitions = 10;
 
 int bench_old(Point_set points) {
 
@@ -90,7 +90,7 @@ int main() {
 
   std::vector<int> x, yOld, yNew;
 
-  for (int N = 1; N < 10000; N += 1 + (N / 100)) {
+  for (int N = 1; N < 1000; N += 1 + (N / 100)) {
 
     cout << N << endl;
 
@@ -108,7 +108,9 @@ int main() {
 
 
   Gnuplot plot("lines");
-  plot.set_title("test");
+  plot.set_title("Comparison of Old and New Algorithms for Constructing an Octree");
+  plot.set_ylabel("Time to Build a Tree (Microseconds)");
+  plot.set_xlabel("Number of Points Added");
   plot.plot_xy(x, yOld, "Old");
   plot.plot_xy(x, yNew, "New");
 
