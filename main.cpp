@@ -4,8 +4,13 @@
 
 #define CGAL_TRACE_STREAM std::cerr
 
+#include <CGAL/point_generators_3.h>
+#include <CGAL/Point_set_3/IO.h>
+#include <CGAL/random_simplify_point_set.h>
+
 #include "gnuplot_i.hpp"
 #include <iostream>
+#include <istream>
 
 #include "benchmark.h"
 
@@ -57,13 +62,40 @@ void synthetic_bench() {
 
 void photogrammetry_bench() {
 
+  std::vector<int> x, yOld, yNew;
+
   // Read example data from file
   std::ifstream stream("../data/archer_original.ply");
   Point_set points;
   stream >> points;
+
+  //points.remove(CGAL::random_simplify_point_set(points, 99.9), points.end());
+
+  while (points.number_of_points() > 10) {
+
+    cout << points.size() << endl;
+
+    points.remove(CGAL::random_simplify_point_set(points, 1) - 1, points.end());
+
+    x.insert(x.begin(), points.size());
+    yOld.insert(yOld.begin(), bench_old(points));
+    yNew.insert(yNew.begin(), bench_new(points));
+  }
+
+  Gnuplot plot("lines");
+  plot.set_title("Comparison of Old and New Algorithms for Constructing an Octree");
+  plot.set_ylabel("Time to Build a Tree (Microseconds)");
+  plot.set_xlabel("Number of Points Added");
+  plot.plot_xy(x, yOld, "Old");
+  plot.plot_xy(x, yNew, "New");
+
+  cout << endl << "Press ENTER to continue..." << endl;
+  cin.clear();
+  cin.ignore(cin.rdbuf()->in_avail());
+  cin.get();
 }
 
 int main() {
 
-  synthetic_bench();
+  photogrammetry_bench();
 }
