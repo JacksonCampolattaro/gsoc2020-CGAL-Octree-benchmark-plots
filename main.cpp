@@ -9,13 +9,13 @@
 
 #include "benchmark.h"
 
-#define SAMPLES_PER_TEST 10
+#define SAMPLES_PER_TEST 100
 
 void synthetic_bench() {
 
   std::vector<int> x, yOld, yNew;
 
-  for (int N = 1; N < 2000; N += 1 + (N / 1000)) {
+  for (int N = 1; N < 2000; N += 1 + (N / 100)) {
 
     cout << N << endl;
     x.push_back(N);
@@ -57,6 +57,10 @@ void synthetic_bench() {
 
 void photogrammetry_bench() {
 
+  // Read example data from file
+  std::ifstream stream("../data/archer_original.ply");
+  Point_set points;
+  stream >> points;
 }
 
 int main() {
