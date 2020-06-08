@@ -15,7 +15,6 @@
 #include <CGAL/point_generators_3.h>
 
 
-#define SAMPLES_PER_TEST 10
 
 using std::cin;
 using std::cout;
@@ -42,7 +41,6 @@ typedef CGAL::OCTREE::Octree
         <Kernel, Point_set, typename Point_set::Point_map, typename Point_set::Vector_map>
         NewOctree;
 
-static const int repetitions = 100;
 
 int bench_old(Point_set points) {
 
@@ -51,20 +49,14 @@ int bench_old(Point_set points) {
   auto input_iterator_first = points.begin();
   auto input_iterator_beyond = points.end();
 
-  int duration = 0;
-  for (int i = 0; i < repetitions; ++i) {
+  auto start = high_resolution_clock::now();
 
-    auto start = high_resolution_clock::now();
+  auto oldOctree = OldOctree((Traits()), input_iterator_first,
+                             input_iterator_beyond, point_map, normal_map);
+  oldOctree.createTree();
 
-    auto oldOctree = OldOctree((Traits()), input_iterator_first,
-                               input_iterator_beyond, point_map, normal_map);
-    oldOctree.createTree();
-
-    auto end = high_resolution_clock::now();
-    duration += duration_cast<microseconds>(end - start).count();
-  }
-
-  return duration / repetitions;
+  auto end = high_resolution_clock::now();
+  return duration_cast<microseconds>(end - start).count();
 }
 
 int bench_new(Point_set points) {
@@ -74,18 +66,12 @@ int bench_new(Point_set points) {
   auto input_iterator_first = points.begin();
   auto input_iterator_beyond = points.end();
 
-  int duration = 0;
-  for (int i = 0; i < repetitions; ++i) {
+  auto start = high_resolution_clock::now();
 
-    auto start = high_resolution_clock::now();
+  NewOctree newOctree(points, point_map, normal_map);
 
-    NewOctree newOctree(points, point_map, normal_map);
-
-    auto end = high_resolution_clock::now();
-    duration += duration_cast<microseconds>(end - start).count();
-  }
-
-  return duration / repetitions;
+  auto end = high_resolution_clock::now();
+  return duration_cast<microseconds>(end - start).count();
 }
 
 #endif //BENCHMARK_BENCHMARK_H
