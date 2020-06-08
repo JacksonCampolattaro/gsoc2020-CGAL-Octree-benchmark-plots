@@ -56,7 +56,7 @@ int bench_old(Point_set points) {
   oldOctree.createTree();
 
   auto end = high_resolution_clock::now();
-  return duration_cast<microseconds>(end - start).count();
+  return duration_cast<milliseconds>(end - start).count();
 }
 
 int bench_new(Point_set points) {
@@ -71,7 +71,7 @@ int bench_new(Point_set points) {
   NewOctree newOctree(points, point_map, normal_map);
 
   auto end = high_resolution_clock::now();
-  return duration_cast<microseconds>(end - start).count();
+  return duration_cast<milliseconds>(end - start).count();
 }
 
 #endif //BENCHMARK_BENCHMARK_H

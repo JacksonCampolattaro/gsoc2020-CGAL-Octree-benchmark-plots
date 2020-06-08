@@ -14,13 +14,13 @@
 
 #include "benchmark.h"
 
-#define SAMPLES_PER_TEST 100
+#define SAMPLES_PER_TEST 2
 
 void synthetic_bench() {
 
   std::vector<int> x, yOld, yNew;
 
-  for (int N = 1; N < 2000; N += 1 + (N / 100)) {
+  for (int N = 1; N < 1000000; N += 1 + (N / 10)) {
 
     cout << N << endl;
     x.push_back(N);
@@ -49,7 +49,7 @@ void synthetic_bench() {
 
   Gnuplot plot("lines");
   plot.set_title("Comparison of Old and New Algorithms for Constructing an Octree");
-  plot.set_ylabel("Time to Build a Tree (Microseconds)");
+  plot.set_ylabel("Time to Build a Tree (Milliseconds)");
   plot.set_xlabel("Number of Points Added");
   plot.plot_xy(x, yOld, "Old");
   plot.plot_xy(x, yNew, "New");
@@ -69,7 +69,7 @@ void photogrammetry_bench() {
   Point_set points;
   stream >> points;
 
-  //points.remove(CGAL::random_simplify_point_set(points, 99.9), points.end());
+  points.remove(CGAL::random_simplify_point_set(points, 99.8), points.end());
 
   while (points.number_of_points() > 10) {
 
@@ -97,5 +97,5 @@ void photogrammetry_bench() {
 
 int main() {
 
-  photogrammetry_bench();
+  synthetic_bench();
 }
