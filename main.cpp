@@ -20,7 +20,7 @@ void synthetic_bench() {
 
   std::vector<int> x, yOld, yNew;
 
-  for (int N = 1; N < 1000000; N += 1 + (N / 10)) {
+  for (int N = 1; N < 3000; N += 1 + (N / 10)) {
 
     cout << N << endl;
     x.push_back(N);
@@ -49,7 +49,7 @@ void synthetic_bench() {
 
   Gnuplot plot("lines");
   plot.set_title("Comparison of Old and New Algorithms for Constructing an Octree");
-  plot.set_ylabel("Time to Build a Tree (Milliseconds)");
+  plot.set_ylabel("Time to Build a Tree (Microseconds)");
   plot.set_xlabel("Number of Points Added");
   plot.plot_xy(x, yOld, "Old");
   plot.plot_xy(x, yNew, "New");
