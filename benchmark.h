@@ -9,7 +9,7 @@
 
 #include "Octree.h"
 #include <CGAL/Shape_detection/Efficient_RANSAC/Efficient_RANSAC_traits.h>
-#include "Octree_3.h"
+#include <CGAL/Octree.h>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Point_set_3.h>
 #include <CGAL/point_generators_3.h>
@@ -37,7 +37,7 @@ typedef CGAL::Shape_detection::internal::Octree
         OldOctree;
 
 // Defining the New Octree
-typedef CGAL::OCTREE::Octree
+typedef CGAL::Octree
         <Kernel, Point_set, typename Point_set::Point_map, typename Point_set::Vector_map>
         NewOctree;
 
