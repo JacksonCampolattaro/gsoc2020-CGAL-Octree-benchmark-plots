@@ -14,7 +14,7 @@
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Point_set_3.h>
 #include <CGAL/point_generators_3.h>
-
+#include "Octree.h"
 
 
 using std::cin;
@@ -22,6 +22,9 @@ using std::cout;
 using std::endl;
 
 using namespace std::chrono;
+
+#define BUCKET_SIZE 20
+#define MAX_DEPTH 10
 
 // Defining the kernel
 typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
@@ -53,7 +56,9 @@ int bench_old(Point_set points) {
   auto start = high_resolution_clock::now();
 
   auto oldOctree = OldOctree((Traits()), input_iterator_first,
-                             input_iterator_beyond, point_map, normal_map);
+                             input_iterator_beyond, point_map, normal_map,
+                             0, BUCKET_SIZE, MAX_DEPTH);
+
   oldOctree.createTree();
 
   auto end = high_resolution_clock::now();
@@ -70,6 +75,7 @@ int bench_new(Point_set points) {
   auto start = high_resolution_clock::now();
 
   NewOctree newOctree(points, point_map, normal_map);
+  newOctree.refine(MAX_DEPTH, BUCKET_SIZE);
 
   auto end = high_resolution_clock::now();
   return duration_cast<microseconds>(end - start).count();
