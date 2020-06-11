@@ -16,6 +16,21 @@
 
 #define SAMPLES_PER_TEST 2
 
+void plot(std::vector<int> x, std::vector<int> yOld, std::vector<int> yNew) {
+
+  Gnuplot plot("lines");
+  plot.set_title("Comparison of Old and New Algorithms for Constructing an Octree");
+  plot.set_ylabel("Time to Build a Tree (Milliseconds)");
+  plot.set_xlabel("Number of Points Added");
+  plot.plot_xy(x, yOld, "Old");
+  plot.plot_xy(x, yNew, "New");
+
+  cout << endl << "Press ENTER to continue..." << endl;
+  cin.clear();
+  cin.ignore(cin.rdbuf()->in_avail());
+  cin.get();
+}
+
 void synthetic_bench() {
 
   std::vector<int> x, yOld, yNew;
@@ -69,30 +84,20 @@ void photogrammetry_bench() {
   Point_set points;
   stream >> points;
 
-  points.remove(CGAL::random_simplify_point_set(points, 99.8), points.end());
+  //points.remove(CGAL::random_simplify_point_set(points, 99.8), points.end());
 
   while (points.number_of_points() > 10) {
 
     cout << points.size() << endl;
 
-    points.remove(CGAL::random_simplify_point_set(points, 0.1) - 1, points.end());
+    points.remove(CGAL::random_simplify_point_set(points, 10) - 1, points.end());
 
     x.insert(x.begin(), points.size());
     yOld.insert(yOld.begin(), bench_old(points));
     yNew.insert(yNew.begin(), bench_new(points));
   }
 
-  Gnuplot plot("lines");
-  plot.set_title("Comparison of Old and New Algorithms for Constructing an Octree");
-  plot.set_ylabel("Time to Build a Tree (Microseconds)");
-  plot.set_xlabel("Number of Points Added");
-  plot.plot_xy(x, yOld, "Old");
-  plot.plot_xy(x, yNew, "New");
-
-  cout << endl << "Press ENTER to continue..." << endl;
-  cin.clear();
-  cin.ignore(cin.rdbuf()->in_avail());
-  cin.get();
+  plot(x, yOld, yNew);
 }
 
 int main() {
