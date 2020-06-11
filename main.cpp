@@ -16,7 +16,7 @@
 
 #define SAMPLES_PER_TEST 2
 
-void plot(std::vector<int> x, std::vector<int> yOld, std::vector<int> yNew) {
+Gnuplot plot(std::vector<int> x, std::vector<int> yOld, std::vector<int> yNew) {
 
   Gnuplot plot("lines");
   plot.set_title("Comparison of Old and New Algorithms for Constructing an Octree");
@@ -25,17 +25,19 @@ void plot(std::vector<int> x, std::vector<int> yOld, std::vector<int> yNew) {
   plot.plot_xy(x, yOld, "Old");
   plot.plot_xy(x, yNew, "New");
 
-  cout << endl << "Press ENTER to continue..." << endl;
-  cin.clear();
-  cin.ignore(cin.rdbuf()->in_avail());
-  cin.get();
+  return plot;
+
+//  cout << endl << "Press ENTER to continue..." << endl;
+//  cin.clear();
+//  cin.ignore(cin.rdbuf()->in_avail());
+//  cin.get();
 }
 
-void synthetic_bench() {
+Gnuplot synthetic_bench(int max_points) {
 
   std::vector<int> x, yOld, yNew;
 
-  for (int N = 1; N < 1000000; N += 1 + (N / 10)) {
+  for (int N = 1; N < max_points; N += 1 + (N / 10)) {
 
     cout << N << endl;
     x.push_back(N);
@@ -62,10 +64,10 @@ void synthetic_bench() {
 
   }
 
-  plot(x, yOld, yNew);
+  return plot(x, yOld, yNew);
 }
 
-void photogrammetry_bench() {
+Gnuplot photogrammetry_bench() {
 
   std::vector<int> x, yOld, yNew;
 
@@ -87,10 +89,15 @@ void photogrammetry_bench() {
     yNew.insert(yNew.begin(), bench_new(points));
   }
 
-  plot(x, yOld, yNew);
+  return plot(x, yOld, yNew);
 }
 
 int main() {
 
-  photogrammetry_bench();
+  auto plot = synthetic_bench(1000);
+
+  cout << endl << "Press ENTER to continue..." << endl;
+  cin.clear();
+  cin.ignore(cin.rdbuf()->in_avail());
+  cin.get();
 }
