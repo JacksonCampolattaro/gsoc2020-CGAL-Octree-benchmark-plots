@@ -16,24 +16,27 @@
 
 #define SAMPLES_PER_TEST 2
 
-Gnuplot plot(std::vector<int> x, std::vector<int> yOld, std::vector<int> yNew) {
+void plot(std::vector<int> x, std::vector<int> y_old, std::vector<int> y_new, std::string file_path) {
 
+  // Create the plot
   Gnuplot plot("lines");
+
+  // Add descriptors
   plot.set_title("Comparison of Old and New Algorithms for Constructing an Octree");
-  plot.set_ylabel("Time to Build a Tree (Milliseconds)");
+  plot.set_ylabel("Time to Build a Tree (Microseconds)");
   plot.set_xlabel("Number of Points Added");
-  plot.plot_xy(x, yOld, "Old");
-  plot.plot_xy(x, yNew, "New");
 
-  return plot;
+  // Add data
+  plot.plot_xy(x, y_old, "Old");
+  plot.plot_xy(x, y_new, "New");
 
-//  cout << endl << "Press ENTER to continue..." << endl;
-//  cin.clear();
-//  cin.ignore(cin.rdbuf()->in_avail());
-//  cin.get();
+  // Save as an image
+  plot.savetofigure(file_path, "png");
+  plot.replot();
+
 }
 
-Gnuplot synthetic_bench(int max_points) {
+void synthetic_bench(int max_points, std::string file_path) {
 
   std::vector<int> x, yOld, yNew;
 
@@ -64,10 +67,10 @@ Gnuplot synthetic_bench(int max_points) {
 
   }
 
-  return plot(x, yOld, yNew);
+  plot(x, yOld, yNew, file_path);
 }
 
-Gnuplot photogrammetry_bench() {
+void photogrammetry_bench(int max_points, std::string file_path) {
 
   std::vector<int> x, yOld, yNew;
 
@@ -76,7 +79,8 @@ Gnuplot photogrammetry_bench() {
   Point_set points;
   stream >> points;
 
-  //points.remove(CGAL::random_simplify_point_set(points, 99.8), points.end());
+  double percent_to_remove = 100.0 * (max_points / points.number_of_points());
+  points.remove(CGAL::random_simplify_point_set(points, 99.8), points.end());
 
   while (points.number_of_points() > 10) {
 
@@ -89,12 +93,12 @@ Gnuplot photogrammetry_bench() {
     yNew.insert(yNew.begin(), bench_new(points));
   }
 
-  return plot(x, yOld, yNew);
+  plot(x, yOld, yNew, file_path);
 }
 
 int main() {
 
-  auto plot = synthetic_bench(1000);
+  synthetic_bench(100, "test.png");
 
   cout << endl << "Press ENTER to continue..." << endl;
   cin.clear();
