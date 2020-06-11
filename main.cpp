@@ -62,17 +62,7 @@ void synthetic_bench() {
 
   }
 
-  Gnuplot plot("lines");
-  plot.set_title("Comparison of Old and New Algorithms for Constructing an Octree");
-  plot.set_ylabel("Time to Build a Tree (Milliseconds)");
-  plot.set_xlabel("Number of Points Added");
-  plot.plot_xy(x, yOld, "Old");
-  plot.plot_xy(x, yNew, "New");
-
-  cout << endl << "Press ENTER to continue..." << endl;
-  cin.clear();
-  cin.ignore(cin.rdbuf()->in_avail());
-  cin.get();
+  plot(x, yOld, yNew);
 }
 
 void photogrammetry_bench() {
