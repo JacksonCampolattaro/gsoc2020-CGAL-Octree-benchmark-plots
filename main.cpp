@@ -14,7 +14,7 @@
 
 #include "benchmark.h"
 
-#define SAMPLES_PER_TEST 10
+#define SAMPLES_PER_TEST 100
 
 void plot(std::vector<int> x, std::vector<int> y_old, std::vector<int> y_new, std::string file_path) {
 
@@ -86,7 +86,7 @@ void photogrammetry_bench(int max_points, std::string file_path) {
 
     cout << points.size() << endl;
 
-    points.remove(CGAL::random_simplify_point_set(points, 10) - 1, points.end());
+    points.remove(CGAL::random_simplify_point_set(points, 0.01) - 1, points.end());
 
     x.insert(x.begin(), points.size());
     yOld.insert(yOld.begin(), bench_old(points));
