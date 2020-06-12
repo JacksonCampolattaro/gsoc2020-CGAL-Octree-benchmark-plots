@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(SOURCE_FILES main.cpp benchmark.h)
 
-find_package(CGAL)
+find_package(CGAL REQUIRED QUIET OPTIONAL_COMPONENTS Core )
 
 add_executable(benchmark ${SOURCE_FILES})
 

@@ -14,7 +14,7 @@
 
 #include "benchmark.h"
 
-#define SAMPLES_PER_TEST 2
+#define SAMPLES_PER_TEST 10
 
 void plot(std::vector<int> x, std::vector<int> y_old, std::vector<int> y_new, std::string file_path) {
 
@@ -31,7 +31,7 @@ void plot(std::vector<int> x, std::vector<int> y_old, std::vector<int> y_new, st
   plot.plot_xy(x, y_new, "New");
 
   // Save as an image
-  plot.savetofigure(file_path, "png");
+  plot.savetofigure(file_path, "png size 1280,720");
   plot.replot();
 
 }
@@ -40,7 +40,7 @@ void synthetic_bench(int max_points, std::string file_path) {
 
   std::vector<int> x, yOld, yNew;
 
-  for (int N = 1; N < max_points; N += 1 + (N / 10)) {
+  for (int N = 1; N < max_points; N += 1 + (N / 100)) {
 
     cout << N << endl;
     x.push_back(N);
@@ -79,8 +79,8 @@ void photogrammetry_bench(int max_points, std::string file_path) {
   Point_set points;
   stream >> points;
 
-  double percent_to_remove = 100.0 * (max_points / points.number_of_points());
-  points.remove(CGAL::random_simplify_point_set(points, 99.8), points.end());
+  double percent_to_remove = 100 - (100.0 * max_points / points.number_of_points());
+  points.remove(CGAL::random_simplify_point_set(points, percent_to_remove), points.end());
 
   while (points.number_of_points() > 10) {
 
@@ -98,10 +98,23 @@ void photogrammetry_bench(int max_points, std::string file_path) {
 
 int main() {
 
-  synthetic_bench(100, "test.png");
+  synthetic_bench(
+          2000,
+          "../results/octree-benchmark-plot-spherical_shell-release_mode-2000_points.png");
+  synthetic_bench(
+          10000,
+          "../results/octree-benchmark-plot-spherical_shell-release_mode-10000.png");
+  synthetic_bench(
+          1000000,
+          "../results/octree-benchmark-plot-spherical_shell-release_mode-1000000.png");
 
-  cout << endl << "Press ENTER to continue..." << endl;
-  cin.clear();
-  cin.ignore(cin.rdbuf()->in_avail());
-  cin.get();
+  photogrammetry_bench(
+          2000,
+          "../results/octree-benchmark-plot-statue_scan-release_mode-2000_points.png");
+  photogrammetry_bench(
+          10000,
+          "../results/octree-benchmark-plot-statue_scan-release_mode-10000.png");
+  photogrammetry_bench(
+          1000000,
+          "../results/octree-benchmark-plot-statue_scan-release_mode-1000000.png");
 }
