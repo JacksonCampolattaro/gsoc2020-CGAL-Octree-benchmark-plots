@@ -103,18 +103,18 @@ int main() {
           "../results/octree-benchmark-plot-spherical_shell-release_mode-2000_points.png");
   synthetic_bench(
           10000,
-          "../results/octree-benchmark-plot-spherical_shell-release_mode-10000.png");
+          "../results/octree-benchmark-plot-spherical_shell-release_mode-10000_points.png");
   synthetic_bench(
           1000000,
-          "../results/octree-benchmark-plot-spherical_shell-release_mode-1000000.png");
+          "../results/octree-benchmark-plot-spherical_shell-release_mode-1000000_points.png");
 
   photogrammetry_bench(
           2000,
           "../results/octree-benchmark-plot-statue_scan-release_mode-2000_points.png");
   photogrammetry_bench(
           10000,
-          "../results/octree-benchmark-plot-statue_scan-release_mode-10000.png");
+          "../results/octree-benchmark-plot-statue_scan-release_mode-10000_points.png");
   photogrammetry_bench(
           1000000,
-          "../results/octree-benchmark-plot-statue_scan-release_mode-1000000.png");
+          "../results/octree-benchmark-plot-statue_scan-release_mode-1000000_points.png");
 }
