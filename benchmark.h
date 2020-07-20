@@ -15,6 +15,7 @@
 #include <CGAL/Point_set_3.h>
 #include <CGAL/point_generators_3.h>
 #include "Octree.h"
+#include "Octree_3.h"
 
 
 using std::cin;
@@ -41,7 +42,7 @@ typedef CGAL::Shape_detection::internal::Octree
         OldOctree;
 
 // Defining the New Octree
-typedef CGAL::Octree
+typedef CGAL::OCTREE::Octree
         <Kernel, Point_set, typename Point_set::Point_map, typename Point_set::Vector_map>
         NewOctree;
 
