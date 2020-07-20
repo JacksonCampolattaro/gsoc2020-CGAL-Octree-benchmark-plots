@@ -84,4 +84,20 @@ int bench_new(Point_set points) {
   return duration_cast<microseconds>(end - start).count();
 }
 
+int bench_improved(Point_set points) {
+
+  auto point_map = points.point_map();
+  auto normal_map = points.normal_map();
+  auto input_iterator_first = points.begin();
+  auto input_iterator_beyond = points.end();
+
+  auto start = high_resolution_clock::now();
+
+  ImprovedOctree improvedOctree(points, point_map);
+  improvedOctree.refine(MAX_DEPTH, BUCKET_SIZE);
+
+  auto end = high_resolution_clock::now();
+  return duration_cast<microseconds>(end - start).count();
+}
+
 #endif //BENCHMARK_BENCHMARK_H
