@@ -16,19 +16,21 @@
 
 #define SAMPLES_PER_TEST 100
 
-void plot(std::vector<int> x, std::vector<int> y_old, std::vector<int> y_new, std::string file_path) {
+void plot(std::vector<int> x, std::vector<int> y_old, std::vector<int> y_new, std::vector<int> y_improved,
+          std::string file_path) {
 
   // Create the plot
   Gnuplot plot("lines");
 
   // Add descriptors
-  plot.set_title("Comparison of Old and New Algorithms for Constructing an Octree");
+  plot.set_title("Comparison of Algorithms for Constructing an Octree");
   plot.set_ylabel("Time to Build a Tree (Microseconds)");
   plot.set_xlabel("Number of Points Added");
 
   // Add data
   plot.plot_xy(x, y_old, "Old");
   plot.plot_xy(x, y_new, "New");
+  plot.plot_xy(x, y_improved, "Improved");
 
   // Save as an image
   plot.savetofigure(file_path, "png size 1280,720");
@@ -38,7 +40,7 @@ void plot(std::vector<int> x, std::vector<int> y_old, std::vector<int> y_new, st
 
 void synthetic_bench(int max_points, std::string file_path) {
 
-  std::vector<int> x, yOld, yNew;
+  std::vector<int> x, yOld, yNew, yImproved;
 
   for (int N = 1; N < max_points; N += 1 + (N / 100)) {
 
@@ -47,6 +49,7 @@ void synthetic_bench(int max_points, std::string file_path) {
 
     int oldResult = 0;
     int newResult = 0;
+    int improvedResult = 0;
 
     for (int sample = 0; sample < SAMPLES_PER_TEST; ++sample) {
 
@@ -59,20 +62,22 @@ void synthetic_bench(int max_points, std::string file_path) {
 
       oldResult += bench_old(points);
       newResult += bench_new(points);
+      improvedResult += bench_improved(points);
 
     }
 
     yOld.push_back(oldResult / SAMPLES_PER_TEST);
     yNew.push_back(newResult / SAMPLES_PER_TEST);
+    yImproved.push_back(improvedResult / SAMPLES_PER_TEST);
 
   }
 
-  plot(x, yOld, yNew, file_path);
+  plot(x, yOld, yNew, yImproved, file_path);
 }
 
 void photogrammetry_bench(int max_points, std::string file_path) {
 
-  std::vector<int> x, yOld, yNew;
+  std::vector<int> x, yOld, yNew, yImproved;
 
   // Read example data from file
   std::ifstream stream("../data/archer_original.ply");
@@ -89,11 +94,13 @@ void photogrammetry_bench(int max_points, std::string file_path) {
     points.remove(CGAL::random_simplify_point_set(points, 0.01) - 1, points.end());
 
     x.insert(x.begin(), points.size());
+
     yOld.insert(yOld.begin(), bench_old(points));
     yNew.insert(yNew.begin(), bench_new(points));
+    yImproved.insert(yImproved.begin(), bench_improved(points));
   }
 
-  plot(x, yOld, yNew, file_path);
+  plot(x, yOld, yNew, yImproved, file_path);
 }
 
 int main() {
@@ -101,20 +108,20 @@ int main() {
   synthetic_bench(
           2000,
           "../results/octree-benchmark-plot-spherical_shell-release_mode-2000_points.png");
-//  synthetic_bench(
-//          10000,
-//          "../results/octree-benchmark-plot-spherical_shell-release_mode-10000_points.png");
-//  synthetic_bench(
-//          1000000,
-//          "../results/octree-benchmark-plot-spherical_shell-release_mode-1000000_points.png");
+  synthetic_bench(
+          10000,
+          "../results/octree-benchmark-plot-spherical_shell-release_mode-10000_points.png");
+  synthetic_bench(
+          1000000,
+          "../results/octree-benchmark-plot-spherical_shell-release_mode-1000000_points.png");
 
   photogrammetry_bench(
           2000,
           "../results/octree-benchmark-plot-statue_scan-release_mode-2000_points.png");
-//  photogrammetry_bench(
-//          10000,
-//          "../results/octree-benchmark-plot-statue_scan-release_mode-10000_points.png");
-//  photogrammetry_bench(
-//          1000000,
-//          "../results/octree-benchmark-plot-statue_scan-release_mode-1000000_points.png");
+  photogrammetry_bench(
+          10000,
+          "../results/octree-benchmark-plot-statue_scan-release_mode-10000_points.png");
+  photogrammetry_bench(
+          1000000,
+          "../results/octree-benchmark-plot-statue_scan-release_mode-1000000_points.png");
 }
