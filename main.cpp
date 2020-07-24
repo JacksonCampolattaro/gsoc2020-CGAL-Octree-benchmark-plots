@@ -105,12 +105,12 @@ void photogrammetry_bench(int max_points, std::string file_path) {
 
 int main() {
 
-  synthetic_bench(
-          2000,
-          "../results/octree-benchmark-plot-spherical_shell-release_mode-2000_points.png");
-  synthetic_bench(
-          10000,
-          "../results/octree-benchmark-plot-spherical_shell-release_mode-10000_points.png");
+//  synthetic_bench(
+//          2000,
+//          "../results/octree-benchmark-plot-spherical_shell-release_mode-2000_points.png");
+//  synthetic_bench(
+//          10000,
+//          "../results/octree-benchmark-plot-spherical_shell-release_mode-10000_points.png");
   synthetic_bench(
           1000000,
           "../results/octree-benchmark-plot-spherical_shell-release_mode-1000000_points.png");
