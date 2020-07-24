@@ -91,7 +91,7 @@ void photogrammetry_bench(int max_points, std::string file_path) {
 
     cout << points.size() << endl;
 
-    points.remove(CGAL::random_simplify_point_set(points, 0.01) - 1, points.end());
+    points.remove(CGAL::random_simplify_point_set(points, 0.1) - 1, points.end());
 
     x.insert(x.begin(), points.size());
 
@@ -111,9 +111,9 @@ int main() {
 //  synthetic_bench(
 //          10000,
 //          "../results/octree-benchmark-plot-spherical_shell-release_mode-10000_points.png");
-  synthetic_bench(
-          1000000,
-          "../results/octree-benchmark-plot-spherical_shell-release_mode-1000000_points.png");
+//  synthetic_bench(
+//          1000000,
+//          "../results/octree-benchmark-plot-spherical_shell-release_mode-1000000_points.png");
 
   photogrammetry_bench(
           2000,
