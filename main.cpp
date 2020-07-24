@@ -14,7 +14,7 @@
 
 #include "benchmark.h"
 
-#define SAMPLES_PER_TEST 100
+#define SAMPLES_PER_TEST 10
 
 void plot(std::vector<int> x, std::vector<int> y_old, std::vector<int> y_new, std::vector<int> y_improved,
           std::string file_path) {
@@ -42,7 +42,7 @@ void synthetic_bench(int max_points, std::string file_path) {
 
   std::vector<int> x, yOld, yNew, yImproved;
 
-  for (int N = 1; N < max_points; N += 1 + (N / 100)) {
+  for (int N = 1; N < max_points; N += 1 + (N / 2)) {
 
     cout << N << endl;
     x.push_back(N);
