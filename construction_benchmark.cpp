@@ -25,27 +25,9 @@ void plot(std::vector<int> x, std::vector<int> y_old, std::vector<int> y_new, st
                     {y_new,      "New"},
                     {y_improved, "Improved"}
             }, "Time to Build a Tree (Microseconds)",
-            "Number of Points Added",
+            "Comparison of Algorithms for Constructing an Octree",
             file_path
   );
-//
-//  // Create the plot
-//  Gnuplot plot("lines");
-//
-//  // Add descriptors
-//  plot.set_title("Comparison of Algorithms for Constructing an Octree");
-//  plot.set_ylabel("Time to Build a Tree (Microseconds)");
-//  plot.set_xlabel("Number of Points Added");
-//
-//  // Add data
-//  plot.plot_xy(x, y_old, "Old");
-//  plot.plot_xy(x, y_new, "New");
-//  plot.plot_xy(x, y_improved, "Improved");
-//
-//  // Save as an image
-//  plot.savetofigure(file_path, "png size 1280,720");
-//  plot.replot();
-//
 }
 
 void synthetic_bench(int max_points, std::string file_path) {
