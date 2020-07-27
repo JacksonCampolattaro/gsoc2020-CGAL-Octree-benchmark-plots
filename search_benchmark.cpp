@@ -2,6 +2,8 @@
 // Created by jackcamp on 7/27/20.
 //
 
+#include "gnuplot_i.hpp"
+
 #include <iostream>
 #include <vector>
 
@@ -10,27 +12,26 @@ struct Labeled_data {
   std::string label;
 };
 
-void plot(Labeled_data x,
-          std::vector<Labeled_data> y,
+void lines(std::vector<int> x, std::string x_axis_title,
+          std::vector<Labeled_data> y, std::string y_axis_title,
+          std::string title,
           std::string file_path) {
-//
-//  // Create the plot
-//  Gnuplot plot("lines");
-//
-//  // Add descriptors
-//  plot.set_title("Comparison of Algorithms for Constructing an Octree");
-//  plot.set_ylabel("Time to Build a Tree (Microseconds)");
-//  plot.set_xlabel("Number of Points Added");
-//
-//  // Add data
-//  plot.plot_xy(x, y_old, "Old");
-//  plot.plot_xy(x, y_new, "New");
-//  plot.plot_xy(x, y_improved, "Improved");
-//
-//  // Save as an image
-//  plot.savetofigure(file_path, "png size 1280,720");
-//  plot.replot();
-//
+
+  // Create the plot
+  Gnuplot plot("lines");
+
+  // Add descriptors
+  plot.set_title(title);
+  plot.set_ylabel(y_axis_title);
+  plot.set_xlabel(x_axis_title);
+
+  // Add data
+  for(auto line : y)
+    plot.plot_xy(x, line.data, line.label);
+
+  // Save as an image
+  plot.savetofigure(file_path, "png size 1280,720");
+  plot.replot();
 }
 
 int main() {
