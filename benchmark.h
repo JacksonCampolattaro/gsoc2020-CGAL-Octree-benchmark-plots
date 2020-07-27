@@ -47,6 +47,7 @@ typedef CGAL::OCTREE::Octree
 
 // Defining the Improved Octree
 typedef CGAL::Octree::Octree<Point_set, typename Point_set::Point_map> ImprovedOctree;
+typedef ImprovedOctree::FT FT;
 
 // Defining the kD tree
 typedef CGAL::Search_traits_3<Kernel> Kd_tree_traits;
@@ -109,6 +110,19 @@ int bench_search_naive(Point_set points, Point search_point) {
   auto start = high_resolution_clock::now();
 
 
+  FT distance_nearest = std::numeric_limits<FT>::max();
+
+  Point naive_nearest;
+  for (auto &p : points.points()) {
+
+    FT distance_current = CGAL::squared_distance(p, search_point);
+    if (distance_current < distance_nearest) {
+
+      distance_nearest = distance_current;
+      naive_nearest = p;
+    }
+  }
+
   auto end = high_resolution_clock::now();
   return duration_cast<microseconds>(end - start).count();
 }
@@ -125,7 +139,6 @@ int bench_search_kd_tree(Kd_tree kd_tree, Point search_point) {
 int bench_search_octree(ImprovedOctree octree, Point search_point) {
 
   auto start = high_resolution_clock::now();
-
 
   auto end = high_resolution_clock::now();
   return duration_cast<microseconds>(end - start).count();

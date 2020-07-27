@@ -75,6 +75,43 @@ void synthetic_bench(int max_points, std::string file_path) {
   plot(x, yOld, yNew, yImproved, file_path);
 }
 
+void synthetic_bench_search(int max_points, std::string file_path) {
+
+  std::vector<int> x, yOld, yNew, yImproved;
+
+  for (int N = 1; N < max_points; N += 1 + (N / 2)) {
+
+    cout << N << endl;
+    x.push_back(N);
+
+    int oldResult = 0;
+    int newResult = 0;
+    int improvedResult = 0;
+
+    for (int sample = 0; sample < SAMPLES_PER_TEST; ++sample) {
+
+      // Generate random point set
+      Point_set points;
+      CGAL::Random_points_on_sphere_3<Point> generator;
+      points.reserve(N);
+      for (std::size_t i = 0; i < N; ++i)
+        points.insert(*(generator++));
+
+      oldResult += bench_old(points);
+      newResult += bench_new(points);
+      improvedResult += bench_improved(points);
+
+    }
+
+    yOld.push_back(oldResult / SAMPLES_PER_TEST);
+    yNew.push_back(newResult / SAMPLES_PER_TEST);
+    yImproved.push_back(improvedResult / SAMPLES_PER_TEST);
+
+  }
+
+  plot(x, yOld, yNew, yImproved, file_path);
+}
+
 void photogrammetry_bench(int max_points, std::string file_path) {
 
   std::vector<int> x, yOld, yNew, yImproved;
@@ -115,13 +152,13 @@ int main() {
 //          1000000,
 //          "../results/octree-benchmark-plot-spherical_shell-release_mode-1000000_points.png");
 
-  photogrammetry_bench(
-          2000,
-          "../results/octree-benchmark-plot-statue_scan-release_mode-2000_points.png");
-  photogrammetry_bench(
-          10000,
-          "../results/octree-benchmark-plot-statue_scan-release_mode-10000_points.png");
-  photogrammetry_bench(
-          1000000,
-          "../results/octree-benchmark-plot-statue_scan-release_mode-1000000_points.png");
+//  photogrammetry_bench(
+//          2000,
+//          "../results/octree-benchmark-plot-statue_scan-release_mode-2000_points.png");
+//  photogrammetry_bench(
+//          10000,
+//          "../results/octree-benchmark-plot-statue_scan-release_mode-10000_points.png");
+//  photogrammetry_bench(
+//          1000000,
+//          "../results/octree-benchmark-plot-statue_scan-release_mode-1000000_points.png");
 }
