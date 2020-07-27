@@ -51,7 +51,7 @@ int bench_search_naive(Point_set points, Point search_point) {
 
   auto end = high_resolution_clock::now();
 
-  std::cout << "naive --> " << naive_nearest << std::endl;
+  std::cout << "naive --> " << naive_nearest << "\n";
   return duration_cast<time_unit>(end - start).count();
 }
 
@@ -64,7 +64,7 @@ int bench_search_kd_tree(Kd_tree &kd_tree, Point search_point) {
   auto end = high_resolution_clock::now();
 
   for (auto p : search)
-    std::cout << "kd_tree --> " << p.first << std::endl;
+    std::cout << "kd_tree --> " << p.first << "\n";
   return duration_cast<time_unit>(end - start).count();
 }
 
@@ -85,22 +85,27 @@ void synthetic_bench(std::size_t num_points, std::string file_path) {
     for (std::size_t i = 0; i < N; ++i)
       points.insert(*(generator++));
 
-    // Generate a search point
-    Point search_point = *generator++;
-
-    // Naive benchmark
-    int naive_time = 0;
-    for (int i = 0; i < SAMPLES_PER_TEST; ++i) {
-
-      naive_time += bench_search_naive(points, search_point) / SAMPLES_PER_TEST;
-    }
-    y_naive.push_back(naive_time);
-
-    // Kd tree benchmark
+    // Build the kd_tree
     Kd_tree kd_tree(points.points().begin(), points.points().end());
     kd_tree.build();
-    y_kdtree.push_back(bench_search_kd_tree(kd_tree, search_point));
-//    y_naive.push_back(bench_search_naive(points, search_point));
+
+    // Time results will be put here
+    int naive_time, kdtree_time;
+
+    // Repeat the benchmark to get higher quality results
+    for (int i = 0; i < SAMPLES_PER_TEST; ++i) {
+
+      // Generate a search point
+      Point search_point = *generator++;
+
+      naive_time += bench_search_naive(points, search_point) / SAMPLES_PER_TEST;
+
+      kdtree_time += bench_search_kd_tree(kd_tree, search_point);
+    }
+
+    y_naive.push_back(naive_time);
+    y_kdtree.push_back(kdtree_time);
+
   }
 
   line_plot(x, "Dataset Size (number of points)",
