@@ -8,7 +8,7 @@
 #include <CGAL/Point_set_3/IO.h>
 #include <CGAL/random_simplify_point_set.h>
 
-#include "gnuplot_i.hpp"
+#include "plotting.h"
 #include <iostream>
 #include <istream>
 
@@ -19,67 +19,40 @@
 void plot(std::vector<int> x, std::vector<int> y_old, std::vector<int> y_new, std::vector<int> y_improved,
           std::string file_path) {
 
-  // Create the plot
-  Gnuplot plot("lines");
-
-  // Add descriptors
-  plot.set_title("Comparison of Algorithms for Constructing an Octree");
-  plot.set_ylabel("Time to Build a Tree (Microseconds)");
-  plot.set_xlabel("Number of Points Added");
-
-  // Add data
-  plot.plot_xy(x, y_old, "Old");
-  plot.plot_xy(x, y_new, "New");
-  plot.plot_xy(x, y_improved, "Improved");
-
-  // Save as an image
-  plot.savetofigure(file_path, "png size 1280,720");
-  plot.replot();
-
+  line_plot(x, "Number of Points Added",
+            {
+                    {y_old,      "Old"},
+                    {y_new,      "New"},
+                    {y_improved, "Improved"}
+            }, "Time to Build a Tree (Microseconds)",
+            "Number of Points Added",
+            file_path
+  );
+//
+//  // Create the plot
+//  Gnuplot plot("lines");
+//
+//  // Add descriptors
+//  plot.set_title("Comparison of Algorithms for Constructing an Octree");
+//  plot.set_ylabel("Time to Build a Tree (Microseconds)");
+//  plot.set_xlabel("Number of Points Added");
+//
+//  // Add data
+//  plot.plot_xy(x, y_old, "Old");
+//  plot.plot_xy(x, y_new, "New");
+//  plot.plot_xy(x, y_improved, "Improved");
+//
+//  // Save as an image
+//  plot.savetofigure(file_path, "png size 1280,720");
+//  plot.replot();
+//
 }
 
 void synthetic_bench(int max_points, std::string file_path) {
 
   std::vector<int> x, yOld, yNew, yImproved;
 
-  for (int N = 1; N < max_points; N += 1 + (N / 2)) {
-
-    cout << N << endl;
-    x.push_back(N);
-
-    int oldResult = 0;
-    int newResult = 0;
-    int improvedResult = 0;
-
-    for (int sample = 0; sample < SAMPLES_PER_TEST; ++sample) {
-
-      // Generate random point set
-      Point_set points;
-      CGAL::Random_points_on_sphere_3<Point> generator;
-      points.reserve(N);
-      for (std::size_t i = 0; i < N; ++i)
-        points.insert(*(generator++));
-
-      oldResult += bench_old(points);
-      newResult += bench_new(points);
-      improvedResult += bench_improved(points);
-
-    }
-
-    yOld.push_back(oldResult / SAMPLES_PER_TEST);
-    yNew.push_back(newResult / SAMPLES_PER_TEST);
-    yImproved.push_back(improvedResult / SAMPLES_PER_TEST);
-
-  }
-
-  plot(x, yOld, yNew, yImproved, file_path);
-}
-
-void synthetic_bench_search(int max_points, std::string file_path) {
-
-  std::vector<int> x, yOld, yNew, yImproved;
-
-  for (int N = 1; N < max_points; N += 1 + (N / 2)) {
+  for (int N = 1; N < max_points; N += 1 + (N / 20)) {
 
     cout << N << endl;
     x.push_back(N);
@@ -142,9 +115,9 @@ void photogrammetry_bench(int max_points, std::string file_path) {
 
 int main() {
 
-//  synthetic_bench(
-//          2000,
-//          "../results/octree-benchmark-plot-spherical_shell-release_mode-2000_points.png");
+  synthetic_bench(
+          2000,
+          "../results/octree-benchmark-plot-spherical_shell-release_mode-2000_points.png");
 //  synthetic_bench(
 //          10000,
 //          "../results/octree-benchmark-plot-spherical_shell-release_mode-10000_points.png");
