@@ -88,7 +88,7 @@ void search_time_vs_point_count(size_t num_points, std::string file_path) {
 
   std::vector<int> x, y_naive, y_kdtree, y_octree;
 
-  for (std::size_t N = 1; N < num_points; ++N) {
+  for (std::size_t N = 1; N < num_points; N += 1 + (N * 0.05)) {
 
     x.push_back(N);
     std::cout << N << std::endl;
@@ -167,7 +167,7 @@ void search_time_vs_k(size_t num_points, size_t max_k, std::string file_path) {
   octree.refine(10, 20);
 
   // Try different values of k
-  for (size_t k = 1; k < max_k; ++k) {
+  for (size_t k = 1; k < max_k; k += 1 + (k * 0.05)) {
 
     x.push_back(k);
     std::cout << k << std::endl;
