@@ -30,7 +30,7 @@ typedef std::chrono::nanoseconds time_unit;
 using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
 
-#define SAMPLES_PER_TEST 10
+#define SAMPLES_PER_TEST 1000
 
 int bench_search_naive(Point_set points, Point search_point) {
 
@@ -51,7 +51,7 @@ int bench_search_naive(Point_set points, Point search_point) {
 
   auto end = high_resolution_clock::now();
 
-  std::cout << "naive --> " << naive_nearest << "\n";
+  std::cout << "naive --> " << naive_nearest << "\r";
   return duration_cast<time_unit>(end - start).count();
 }
 
@@ -64,7 +64,7 @@ int bench_search_kd_tree(Kd_tree &kd_tree, Point search_point, size_t k) {
   auto end = high_resolution_clock::now();
 
   for (auto p : search)
-    std::cout << "kd_tree --> " << p.first << "\n";
+    std::cout << "kd_tree --> " << p.first << "\r";
   return duration_cast<time_unit>(end - start).count();
 }
 
@@ -79,7 +79,7 @@ int bench_search_octree(Octree &octree, Point search_point, size_t k) {
   auto end = high_resolution_clock::now();
 
   for (auto p : nearest_neighbors)
-    std::cout << "octree --> " << p << "\n";
+    std::cout << "octree --> " << p << "\r";
   return duration_cast<time_unit>(end - start).count();
 }
 
@@ -121,16 +121,16 @@ void search_time_vs_point_count(size_t num_points, std::string file_path) {
       // Generate a search point
       Point search_point = *generator++;
 
-      naive_time += bench_search_naive(points, search_point) / SAMPLES_PER_TEST;
+      naive_time += bench_search_naive(points, search_point);
 
-      kdtree_time += bench_search_kd_tree(kd_tree, search_point, 1) / SAMPLES_PER_TEST;
+      kdtree_time += bench_search_kd_tree(kd_tree, search_point, 1);
 
-      octree_time += bench_search_octree(octree, search_point, 1) / SAMPLES_PER_TEST;
+      octree_time += bench_search_octree(octree, search_point, 1);
     }
 
-    y_naive.push_back(naive_time);
-    y_kdtree.push_back(kdtree_time);
-    y_octree.push_back(octree_time);
+    y_naive.push_back(naive_time / SAMPLES_PER_TEST);
+    y_kdtree.push_back(kdtree_time / SAMPLES_PER_TEST);
+    y_octree.push_back(octree_time / SAMPLES_PER_TEST);
 
   }
 
@@ -182,13 +182,13 @@ void search_time_vs_k(size_t num_points, size_t max_k, std::string file_path) {
       // Generate a search point
       Point search_point = *generator++;
 
-      kdtree_time += bench_search_kd_tree(kd_tree, search_point, k) / SAMPLES_PER_TEST;
+      kdtree_time += bench_search_kd_tree(kd_tree, search_point, k);
 
-      octree_time += bench_search_octree(octree, search_point, k) / SAMPLES_PER_TEST;
+      octree_time += bench_search_octree(octree, search_point, k);
     }
 
-    y_kdtree.push_back(kdtree_time);
-    y_octree.push_back(octree_time);
+    y_kdtree.push_back(kdtree_time / SAMPLES_PER_TEST);
+    y_octree.push_back(octree_time / SAMPLES_PER_TEST);
   }
 
   line_plot(x, "K (Number of Neighbors to find)",
@@ -203,8 +203,8 @@ void search_time_vs_k(size_t num_points, size_t max_k, std::string file_path) {
 
 int main() {
 
-//  search_time_vs_point_count(10000, "../results/test.png");
-  search_time_vs_k(10000, 1000, "../results/test.png");
+  search_time_vs_point_count(10000, "../results/test.png");
+//  search_time_vs_k(10000, 1000, "../results/test.png");
 
   return EXIT_SUCCESS;
 }
