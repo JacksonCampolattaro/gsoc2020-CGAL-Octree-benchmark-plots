@@ -203,8 +203,11 @@ void search_time_vs_k(size_t num_points, size_t max_k, std::string file_path) {
 
 int main() {
 
-  search_time_vs_point_count(1000, "../results/test.png");
-//  search_time_vs_k(10000, 1000, "../results/test.png");
+  search_time_vs_point_count(10000,
+                             "../results/nearest_neighbor_speed_vs_point_count-benchmark-plot-spherical_shell-release_mode-10000_points-3_way.png");
+
+  search_time_vs_k(10000, 1000,
+                   "../results/nearest_neighbor_speed_vs_k-benchmark-plot-spherical_shell-release_mode-10000_points-2_way.png");
 
   return EXIT_SUCCESS;
 }
