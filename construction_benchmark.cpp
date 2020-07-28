@@ -57,7 +57,7 @@ using std::chrono::duration_cast;
 using std::cout;
 using std::endl;
 
-#define SAMPLES_PER_TEST 100
+#define SAMPLES_PER_TEST 10
 
 #define BUCKET_SIZE 20
 #define MAX_DEPTH 10
@@ -213,20 +213,20 @@ int main() {
 //  synthetic_bench(
 //          2000,
 //          "../results/octree-benchmark-plot-spherical_shell-release_mode-2000_points-4_way.png");
-  synthetic_bench(
-          10000,
-          "../results/octree-benchmark-plot-spherical_shell-release_mode-10000_points-4_way.png");
 //  synthetic_bench(
-//          1000000,
-//          "../results/octree-benchmark-plot-spherical_shell-release_mode-1000000_points-4_way.png");
+//          10000,
+//          "../results/octree-benchmark-plot-spherical_shell-release_mode-10000_points-4_way.png");
+  synthetic_bench(
+          1000000,
+          "../results/octree-benchmark-plot-spherical_shell-release_mode-1000000_points-4_way.png");
 
 //  photogrammetry_bench(
 //          2000,
 //          "../results/octree-benchmark-plot-statue_scan-release_mode-2000_points-4_way.png");
-  photogrammetry_bench(
-          10000,
-          "../results/octree-benchmark-plot-statue_scan-release_mode-10000_points-4_way.png");
 //  photogrammetry_bench(
-//          1000000,
-//          "../results/octree-benchmark-plot-statue_scan-release_mode-1000000_points-4_way.png");
+//          10000,
+//          "../results/octree-benchmark-plot-statue_scan-release_mode-10000_points-4_way.png");
+  photogrammetry_bench(
+          1000000,
+          "../results/octree-benchmark-plot-statue_scan-release_mode-1000000_points-4_way.png");
 }
