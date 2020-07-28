@@ -99,14 +99,22 @@ int bench_new(Point_set points) {
 int bench_improved(Point_set points) {
 
   auto point_map = points.point_map();
-  auto normal_map = points.normal_map();
-  auto input_iterator_first = points.begin();
-  auto input_iterator_beyond = points.end();
 
   auto start = high_resolution_clock::now();
 
   ImprovedOctree improvedOctree(points, point_map);
   improvedOctree.refine(MAX_DEPTH, BUCKET_SIZE);
+
+  auto end = high_resolution_clock::now();
+  return duration_cast<time_unit>(end - start).count();
+}
+
+int bench_kdtree(Point_set points) {
+
+  auto start = high_resolution_clock::now();
+
+  Kd_tree kd_tree(points.points().begin(), points.points().end());
+  kd_tree.build();
 
   auto end = high_resolution_clock::now();
   return duration_cast<time_unit>(end - start).count();
