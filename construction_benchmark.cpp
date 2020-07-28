@@ -16,23 +16,9 @@
 
 #define SAMPLES_PER_TEST 10
 
-void plot(std::vector<int> x, std::vector<int> y_old, std::vector<int> y_new, std::vector<int> y_improved,
-          std::string file_path) {
-
-  line_plot(x, "Number of Points Added",
-            {
-                    {y_old,      "Old"},
-                    {y_new,      "New"},
-                    {y_improved, "Improved"}
-            }, "Time to Build a Tree (Microseconds)",
-            "Comparison of Algorithms for Constructing an Octree",
-            file_path
-  );
-}
-
 void synthetic_bench(int max_points, std::string file_path) {
 
-  std::vector<int> x, yOld, yNew, yImproved;
+  std::vector<int> x, y_old, y_new, y_improved;
 
   for (int N = 1; N < max_points; N += 1 + (N / 20)) {
 
@@ -58,18 +44,26 @@ void synthetic_bench(int max_points, std::string file_path) {
 
     }
 
-    yOld.push_back(oldResult / SAMPLES_PER_TEST);
-    yNew.push_back(newResult / SAMPLES_PER_TEST);
-    yImproved.push_back(improvedResult / SAMPLES_PER_TEST);
+    y_old.push_back(oldResult / SAMPLES_PER_TEST);
+    y_new.push_back(newResult / SAMPLES_PER_TEST);
+    y_improved.push_back(improvedResult / SAMPLES_PER_TEST);
 
   }
 
-  plot(x, yOld, yNew, yImproved, file_path);
+  line_plot(x, "Number of Points Added",
+            {
+                    {y_old,      "Old"},
+                    {y_new,      "New"},
+                    {y_improved, "Improved"}
+            }, "Time to Build a Tree (Microseconds)",
+            "Comparison of Algorithms for Constructing an Octree",
+            file_path
+  );
 }
 
 void photogrammetry_bench(int max_points, std::string file_path) {
 
-  std::vector<int> x, yOld, yNew, yImproved;
+  std::vector<int> x, y_old, y_new, y_improved;
 
   // Read example data from file
   std::ifstream stream("../data/archer_original.ply");
@@ -87,12 +81,20 @@ void photogrammetry_bench(int max_points, std::string file_path) {
 
     x.insert(x.begin(), points.size());
 
-    yOld.insert(yOld.begin(), bench_old(points));
-    yNew.insert(yNew.begin(), bench_new(points));
-    yImproved.insert(yImproved.begin(), bench_improved(points));
+    y_old.insert(y_old.begin(), bench_old(points));
+    y_new.insert(y_new.begin(), bench_new(points));
+    y_improved.insert(y_improved.begin(), bench_improved(points));
   }
 
-  plot(x, yOld, yNew, yImproved, file_path);
+  line_plot(x, "Number of Points Added",
+            {
+                    {y_old,      "Old"},
+                    {y_new,      "New"},
+                    {y_improved, "Improved"}
+            }, "Time to Build a Tree (Microseconds)",
+            "Comparison of Algorithms for Constructing an Octree",
+            file_path
+  );
 }
 
 int main() {
