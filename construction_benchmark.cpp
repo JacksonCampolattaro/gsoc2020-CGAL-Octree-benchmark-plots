@@ -57,7 +57,8 @@ using std::chrono::duration_cast;
 using std::cout;
 using std::endl;
 
-#define SAMPLES_PER_TEST 10
+#define SAMPLES_PER_TEST 1000
+
 #define BUCKET_SIZE 20
 #define MAX_DEPTH 10
 
@@ -122,7 +123,7 @@ int bench_kdtree(Point_set points) {
 
 void synthetic_bench(int max_points, std::string file_path) {
 
-  std::vector<int> x, y_old, y_new, y_improved;
+  std::vector<int> x, y_old, y_new, y_improved, y_kd;
 
   for (int N = 1; N < max_points; N += 1 + (N / 20)) {
 
@@ -132,6 +133,7 @@ void synthetic_bench(int max_points, std::string file_path) {
     int oldResult = 0;
     int newResult = 0;
     int improvedResult = 0;
+    int kdResult = 0;
 
     for (int sample = 0; sample < SAMPLES_PER_TEST; ++sample) {
 
@@ -145,20 +147,23 @@ void synthetic_bench(int max_points, std::string file_path) {
       oldResult += bench_old(points);
       newResult += bench_new(points);
       improvedResult += bench_improved(points);
+      kdResult += bench_kdtree(points);
 
     }
 
     y_old.push_back(oldResult / SAMPLES_PER_TEST);
     y_new.push_back(newResult / SAMPLES_PER_TEST);
     y_improved.push_back(improvedResult / SAMPLES_PER_TEST);
+    y_kd.push_back(kdResult / SAMPLES_PER_TEST);
 
   }
 
   line_plot(x, "Number of Points Added",
             {
-                    {y_old,      "Old"},
-                    {y_new,      "New"},
-                    {y_improved, "Improved"}
+                    {y_old, "Old"},
+                    {y_new, "New"},
+                    {y_improved, "Improved"},
+                    {y_kd, "kD Tree"}
             }, "Time to Build a Tree (Microseconds)",
             "Comparison of Algorithms for Constructing an Octree",
             file_path
@@ -167,7 +172,7 @@ void synthetic_bench(int max_points, std::string file_path) {
 
 void photogrammetry_bench(int max_points, std::string file_path) {
 
-  std::vector<int> x, y_old, y_new, y_improved;
+  std::vector<int> x, y_old, y_new, y_improved, y_kd;
 
   // Read example data from file
   std::ifstream stream("../data/archer_original.ply");
@@ -188,13 +193,15 @@ void photogrammetry_bench(int max_points, std::string file_path) {
     y_old.insert(y_old.begin(), bench_old(points));
     y_new.insert(y_new.begin(), bench_new(points));
     y_improved.insert(y_improved.begin(), bench_improved(points));
+    y_kd.insert(y_kd.begin(), bench_kdtree(points));
   }
 
   line_plot(x, "Number of Points Added",
             {
                     {y_old,      "Old"},
                     {y_new,      "New"},
-                    {y_improved, "Improved"}
+                    {y_improved, "Improved"},
+                    {y_kd, "kD Tree"}
             }, "Time to Build a Tree (Microseconds)",
             "Comparison of Algorithms for Constructing an Octree",
             file_path
@@ -205,21 +212,21 @@ int main() {
 
   synthetic_bench(
           2000,
-          "../results/octree-benchmark-plot-spherical_shell-release_mode-2000_points.png");
+          "../results/octree-benchmark-plot-spherical_shell-release_mode-2000_points-4_way.png");
 //  synthetic_bench(
 //          10000,
-//          "../results/octree-benchmark-plot-spherical_shell-release_mode-10000_points.png");
+//          "../results/octree-benchmark-plot-spherical_shell-release_mode-10000_points-4_way.png");
 //  synthetic_bench(
 //          1000000,
-//          "../results/octree-benchmark-plot-spherical_shell-release_mode-1000000_points.png");
+//          "../results/octree-benchmark-plot-spherical_shell-release_mode-1000000_points-4_way.png");
 
-//  photogrammetry_bench(
-//          2000,
-//          "../results/octree-benchmark-plot-statue_scan-release_mode-2000_points.png");
+  photogrammetry_bench(
+          2000,
+          "../results/octree-benchmark-plot-statue_scan-release_mode-2000_points-4_way.png");
 //  photogrammetry_bench(
 //          10000,
-//          "../results/octree-benchmark-plot-statue_scan-release_mode-10000_points.png");
+//          "../results/octree-benchmark-plot-statue_scan-release_mode-10000_points-4_way.png");
 //  photogrammetry_bench(
 //          1000000,
-//          "../results/octree-benchmark-plot-statue_scan-release_mode-1000000_points.png");
+//          "../results/octree-benchmark-plot-statue_scan-release_mode-1000000_points-4_way.png");
 }

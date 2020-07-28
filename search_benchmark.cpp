@@ -30,7 +30,7 @@ typedef std::chrono::nanoseconds time_unit;
 using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
 
-#define SAMPLES_PER_TEST 100000
+#define SAMPLES_PER_TEST 100
 
 int bench_search_naive(Point_set points, Point search_point) {
 
