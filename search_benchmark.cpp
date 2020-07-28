@@ -83,7 +83,7 @@ int bench_search_octree(Octree &octree, Point search_point, size_t k) {
 }
 
 
-void synthetic_bench(std::size_t num_points, std::string file_path) {
+void search_time_vs_point_count(size_t num_points, std::string file_path) {
 
   std::vector<int> x, y_naive, y_kdtree, y_octree;
 
@@ -135,7 +135,7 @@ void synthetic_bench(std::size_t num_points, std::string file_path) {
 
   line_plot(x, "Dataset Size (number of points)",
             {
-                    {y_naive, "Naive"},
+                    {y_naive,  "Naive"},
                     {y_kdtree, "kD tree"},
                     {y_octree, "Octree"}
             }, "Time to find the nearest point (nanoseconds)",
@@ -143,14 +143,69 @@ void synthetic_bench(std::size_t num_points, std::string file_path) {
             file_path);
 }
 
-void k_bench() {
+void search_time_vs_k(size_t num_points, size_t max_k, std::string file_path) {
 
+  std::vector<int> x, y_kdtree, y_octree;
+
+//  for (std::size_t N = 1; N < num_points; ++N) {
+//
+//    x.push_back(N);
+//    std::cout << N << std::endl;
+//
+//    // Generate a dataset
+//    Point_set points;
+//    CGAL::Random_points_on_sphere_3<Point> generator;
+//    points.reserve(N);
+//    for (std::size_t i = 0; i < N; ++i)
+//      points.insert(*(generator++));
+//
+//    // Build the kd_tree
+//    auto kdtree_points_copy = points;
+//    Kd_tree kd_tree(kdtree_points_copy.points().begin(), kdtree_points_copy.points().end());
+//    kd_tree.build();
+//
+//    // Build the octree
+//    auto octree_points_copy = points;
+//    auto point_map = octree_points_copy.point_map();
+//    Octree octree(octree_points_copy, point_map);
+//    octree.refine(10, 20);
+//
+//    // Time results will be put here
+//    int naive_time, kdtree_time, octree_time;
+//    naive_time = kdtree_time = octree_time = 0;
+//
+//    // Repeat the benchmark to get higher quality results
+//    for (int i = 0; i < SAMPLES_PER_TEST; ++i) {
+//
+//      // Generate a search point
+//      Point search_point = *generator++;
+//
+//      naive_time += bench_search_naive(points, search_point) / SAMPLES_PER_TEST;
+//
+//      kdtree_time += bench_search_kd_tree(kd_tree, search_point, 1) / SAMPLES_PER_TEST;
+//
+//      octree_time += bench_search_octree(octree, search_point, 1) / SAMPLES_PER_TEST;
+//    }
+//
+//    y_naive.push_back(naive_time);
+//    y_kdtree.push_back(kdtree_time);
+//    y_octree.push_back(octree_time);
+//
+//  }
+
+  line_plot(x, "K (Number of Neighbors to find)",
+            {
+                    {y_kdtree, "kD tree"},
+                    {y_octree, "Octree"}
+            }, "Time to find neighbors (nanoseconds)",
+            "Time to Find K Nearest Neighbors in a Set of " + std::to_string(num_points) + " Points",
+            file_path);
 }
 
 
 int main() {
 
-  synthetic_bench(10000, "../results/test.png");
+  search_time_vs_point_count(10000, "../results/test.png");
 
   return EXIT_SUCCESS;
 }
