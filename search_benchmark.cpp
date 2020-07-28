@@ -35,7 +35,6 @@ int bench_search_naive(Point_set points, Point search_point) {
 
   auto start = high_resolution_clock::now();
 
-
   FT distance_nearest = std::numeric_limits<FT>::max();
 
   Point naive_nearest;
@@ -68,12 +67,27 @@ int bench_search_kd_tree(Kd_tree &kd_tree, Point search_point) {
   return duration_cast<time_unit>(end - start).count();
 }
 
+int bench_search_octree(Octree &octree, Point search_point) {
+
+  std::vector<Point> nearest_neighbors;
+
+  auto start = high_resolution_clock::now();
+
+  octree.nearest_k_neighbors(search_point, 1, std::back_inserter(nearest_neighbors));
+
+  auto end = high_resolution_clock::now();
+
+  for (auto p : nearest_neighbors)
+    std::cout << "octree --> " << p << "\n";
+  return duration_cast<time_unit>(end - start).count();
+}
+
 
 void synthetic_bench(std::size_t num_points, std::string file_path) {
 
-  std::vector<int> x, y_naive, y_kdtree;
+  std::vector<int> x, y_naive, y_kdtree, y_octree;
 
-  for (std::size_t N = 0; N < num_points; ++N) {
+  for (std::size_t N = 1; N < num_points; ++N) {
 
     x.push_back(N);
     std::cout << N << std::endl;
@@ -86,11 +100,19 @@ void synthetic_bench(std::size_t num_points, std::string file_path) {
       points.insert(*(generator++));
 
     // Build the kd_tree
-    Kd_tree kd_tree(points.points().begin(), points.points().end());
+    auto kdtree_points_copy = points;
+    Kd_tree kd_tree(kdtree_points_copy.points().begin(), kdtree_points_copy.points().end());
     kd_tree.build();
 
+    // Build the octree
+    auto octree_points_copy = points;
+    auto point_map = octree_points_copy.point_map();
+    Octree octree(octree_points_copy, point_map);
+    octree.refine(10, 20);
+
     // Time results will be put here
-    int naive_time, kdtree_time;
+    int naive_time, kdtree_time, octree_time;
+    naive_time = kdtree_time = octree_time = 0;
 
     // Repeat the benchmark to get higher quality results
     for (int i = 0; i < SAMPLES_PER_TEST; ++i) {
@@ -100,18 +122,22 @@ void synthetic_bench(std::size_t num_points, std::string file_path) {
 
       naive_time += bench_search_naive(points, search_point) / SAMPLES_PER_TEST;
 
-      kdtree_time += bench_search_kd_tree(kd_tree, search_point);
+      kdtree_time += bench_search_kd_tree(kd_tree, search_point) / SAMPLES_PER_TEST;
+
+      octree_time += bench_search_octree(octree, search_point) / SAMPLES_PER_TEST;
     }
 
     y_naive.push_back(naive_time);
     y_kdtree.push_back(kdtree_time);
+    y_octree.push_back(octree_time);
 
   }
 
   line_plot(x, "Dataset Size (number of points)",
             {
                     {y_naive, "Naive"},
-                    {y_kdtree, "kD tree"}
+                    {y_kdtree, "kD tree"},
+                    {y_octree, "Octree"}
             }, "Time to find the nearest point (nanoseconds)",
             "test",
             file_path);
