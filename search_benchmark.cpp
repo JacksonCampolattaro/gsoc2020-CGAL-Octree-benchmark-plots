@@ -30,7 +30,7 @@ typedef std::chrono::nanoseconds time_unit;
 using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
 
-#define SAMPLES_PER_TEST 1000
+#define SAMPLES_PER_TEST 100000
 
 int bench_search_naive(Point_set points, Point search_point) {
 
@@ -140,7 +140,7 @@ void search_time_vs_point_count(size_t num_points, std::string file_path) {
                     {y_kdtree, "kD tree"},
                     {y_octree, "Octree"}
             }, "Time to find the nearest point (nanoseconds)",
-            "test",
+            "Comparison of Algorithms for Finding the Nearest Neighbor of a Point",
             file_path);
 }
 
@@ -203,7 +203,7 @@ void search_time_vs_k(size_t num_points, size_t max_k, std::string file_path) {
 
 int main() {
 
-  search_time_vs_point_count(10000, "../results/test.png");
+  search_time_vs_point_count(1000, "../results/test.png");
 //  search_time_vs_k(10000, 1000, "../results/test.png");
 
   return EXIT_SUCCESS;
