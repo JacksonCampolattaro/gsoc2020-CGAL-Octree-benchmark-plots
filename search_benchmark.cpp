@@ -54,11 +54,11 @@ int bench_search_naive(Point_set points, Point search_point) {
   return duration_cast<time_unit>(end - start).count();
 }
 
-int bench_search_kd_tree(Kd_tree &kd_tree, Point search_point) {
+int bench_search_kd_tree(Kd_tree &kd_tree, Point search_point, size_t k) {
 
   auto start = high_resolution_clock::now();
 
-  Kd_tree_search search(kd_tree, search_point, 1);
+  Kd_tree_search search(kd_tree, search_point, k);
 
   auto end = high_resolution_clock::now();
 
@@ -67,13 +67,13 @@ int bench_search_kd_tree(Kd_tree &kd_tree, Point search_point) {
   return duration_cast<time_unit>(end - start).count();
 }
 
-int bench_search_octree(Octree &octree, Point search_point) {
+int bench_search_octree(Octree &octree, Point search_point, size_t k) {
 
   std::vector<Point> nearest_neighbors;
 
   auto start = high_resolution_clock::now();
 
-  octree.nearest_k_neighbors(search_point, 1, std::back_inserter(nearest_neighbors));
+  octree.nearest_k_neighbors(search_point, k, std::back_inserter(nearest_neighbors));
 
   auto end = high_resolution_clock::now();
 
@@ -122,9 +122,9 @@ void synthetic_bench(std::size_t num_points, std::string file_path) {
 
       naive_time += bench_search_naive(points, search_point) / SAMPLES_PER_TEST;
 
-      kdtree_time += bench_search_kd_tree(kd_tree, search_point) / SAMPLES_PER_TEST;
+      kdtree_time += bench_search_kd_tree(kd_tree, search_point, 1) / SAMPLES_PER_TEST;
 
-      octree_time += bench_search_octree(octree, search_point) / SAMPLES_PER_TEST;
+      octree_time += bench_search_octree(octree, search_point, 1) / SAMPLES_PER_TEST;
     }
 
     y_naive.push_back(naive_time);
@@ -142,6 +142,11 @@ void synthetic_bench(std::size_t num_points, std::string file_path) {
             "test",
             file_path);
 }
+
+void k_bench() {
+
+}
+
 
 int main() {
 
