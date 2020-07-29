@@ -30,7 +30,7 @@ typedef std::chrono::nanoseconds time_unit;
 using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
 
-#define SAMPLES_PER_TEST 50000
+#define SAMPLES_PER_TEST 10
 
 int bench_search_naive(Point_set points, Point search_point) {
 
@@ -167,7 +167,7 @@ void search_time_vs_k(size_t num_points, size_t max_k, std::string file_path) {
   octree.refine(10, 20);
 
   // Try different values of k
-  for (size_t k = 1; k < max_k; k += 1 + (k * 0.05)) {
+  for (size_t k = 1; k < max_k; k += 1 + (k * 0.01)) {
 
     x.push_back(k);
     std::cout << k << std::endl;
@@ -205,13 +205,13 @@ int main() {
 
 //  search_time_vs_point_count(1000,
 //                             "../results/nearest_neighbor_speed_vs_point_count-benchmark-plot-spherical_shell-release_mode-1000_points-3_way.png");
-  search_time_vs_point_count(2000,
-                             "../results/nearest_neighbor_speed_vs_point_count-benchmark-plot-spherical_shell-release_mode-2000_points-3_way.png");
+//  search_time_vs_point_count(2000,
+//                             "../results/nearest_neighbor_speed_vs_point_count-benchmark-plot-spherical_shell-release_mode-2000_points-3_way.png");
 //  search_time_vs_point_count(10000,
 //                             "../results/nearest_neighbor_speed_vs_point_count-benchmark-plot-spherical_shell-release_mode-10000_points-3_way.png");
 
-//  search_time_vs_k(10000, 1000,
-//                   "../results/nearest_neighbor_speed_vs_k-benchmark-plot-spherical_shell-release_mode-10000_points-2_way.png");
+  search_time_vs_k(2000, 2500,
+                   "../results/nearest_neighbor_speed_vs_k-benchmark-plot-spherical_shell-release_mode-2500_points-2_way.png");
 
   return EXIT_SUCCESS;
 }
